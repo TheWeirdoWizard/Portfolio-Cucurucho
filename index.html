@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VHS STUDIO — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --neon-cyan: #00ffff;
+    --neon-pink: #ff00aa;
+    --neon-yellow: #ffff00;
+    --neon-green: #00ff41;
+    --dark-bg: #080808;
+    --dark-mid: #0f0f0f;
+    --dark-panel: #111118;
+    --vhs-purple: #1a0033;
+    --vhs-blue: #000833;
+    --text-main: #e8e8e8;
+    --text-dim: #888899;
+    --scanline-opacity: 0.03;
+    --glitch-color1: #ff00aa;
+    --glitch-color2: #00ffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark-bg);
+    color: var(--text-main);
+    font-family: 'Share Tech Mono', monospace;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  /* ===================== SCANLINES OVERLAY ===================== */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.08) 2px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* VHS noise flicker */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0.4;
+    animation: noiseAnim 0.2s steps(1) infinite;
+  }
+
+  @keyframes noiseAnim {
+    0%   { transform: translate(0,0); }
+    10%  { transform: translate(-1%,-1%); }
+    20%  { transform: translate(1%,0); }
+    30%  { transform: translate(0,1%); }
+    40%  { transform: translate(-1%,0); }
+    50%  { transform: translate(1%,1%); }
+    60%  { transform: translate(0,-1%); }
+    70%  { transform: translate(-1%,1%); }
+    80%  { transform: translate(1%,-1%); }
+    90%  { transform: translate(0,0); }
+    100% { transform: translate(-1%,-1%); }
+  }
+
+  /* ===================== PAGES ===================== */
+  .page { display: none; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* ===================== NAV ===================== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    background: rgba(8,8,8,0.95);
+    border-bottom: 1px solid var(--neon-cyan);
+    padding: 0 20px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 0 20px rgba(0,255,255,0.15);
+  }
+
+  .nav-logo {
+    font-family: 'VT323', monospace;
+    font-size: 1.6rem;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+    letter-spacing: 2px;
+    animation: flickerLogo 4s infinite;
+  }
+
+  @keyframes flickerLogo {
+    0%,95%,100% { opacity: 1; }
+    96% { opacity: 0.3; }
+    97% { opacity: 1; }
+    98% { opacity: 0.5; }
+    99% { opacity: 1; }
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 6px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.45rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 6px 10px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+    cursor: pointer;
+    display: block;
+  }
+
+  .nav-links a:hover,
+  .nav-links a.active-link {
+    color: var(--neon-pink);
+    border-color: var(--neon-pink);
+    text-shadow: 0 0 8px var(--neon-pink);
+    box-shadow: 0 0 10px rgba(255,0,170,0.2);
+  }
+
+  /* hamburger */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 5px;
+  }
+  .hamburger span {
+    width: 24px; height: 2px;
+    background: var(--neon-cyan);
+    display: block;
+    transition: all 0.3s;
+  }
+
+  /* ===================== HOME PAGE ===================== */
+  #page-home {
+    background: radial-gradient(ellipse at 50% 0%, #0d0020 0%, #000510 40%, var(--dark-bg) 100%);
+    padding-top: 52px;
+  }
+
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 40px 20px;
+  }
+
+  /* Grid lines background */
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,255,0.04) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: gridScroll 20s linear infinite;
+    perspective: 500px;
+    transform: perspective(300px) rotateX(20deg) scaleY(1.5);
+    transform-origin: bottom;
+    bottom: 0;
+    height: 70%;
+    top: auto;
+  }
+
+  @keyframes gridScroll {
+    from { background-position: 0 0; }
+    to { background-position: 0 50px; }
+  }
+
+  .vhs-badge {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.5rem;
+    color: var(--neon-pink);
+    border: 1px solid var(--neon-pink);
+    padding: 5px 12px;
+    margin-bottom: 28px;
+    text-shadow: 0 0 6px var(--neon-pink);
+    box-shadow: 0 0 12px rgba(255,0,170,0.2), inset 0 0 12px rgba(255,0,170,0.05);
+    letter-spacing: 2px;
+    animation: badgePulse 2s ease-in-out infinite;
+  }
+
+  @keyframes badgePulse {
+    0%,100% { box-shadow: 0 0 12px rgba(255,0,170,0.2), inset 0 0 12px rgba(255,0,170,0.05); }
+    50% { box-shadow: 0 0 24px rgba(255,0,170,0.5), inset 0 0 20px rgba(255,0,170,0.1); }
+  }
+
+  .hero-title {
+    font-family: 'VT323', monospace;
+    font-size: clamp(4rem, 18vw, 12rem);
+    line-height: 0.9;
+    text-align: center;
+    margin-bottom: 10px;
+    position: relative;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .hero-title .line1 {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 20px var(--neon-cyan), 0 0 40px var(--neon-cyan), 0 0 60px rgba(0,255,255,0.3);
+    display: inline;
+    animation: glitch1 5s infinite;
+  }
+
+  .hero-title .line2 {
+    color: var(--neon-pink);
+    text-shadow: 0 0 20px var(--neon-pink), 0 0 40px var(--neon-pink);
+    display: inline;
+    animation: glitch2 7s infinite;
+  }
+
+  @keyframes glitch1 {
+    0%,90%,100% { transform: translate(0); clip-path: none; }
+    91% { transform: translate(-3px, 1px); clip-path: inset(20% 0 30% 0); color: var(--glitch-color1); }
+    92% { transform: translate(3px, -1px); clip-path: inset(50% 0 10% 0); color: var(--neon-cyan); }
+    93% { transform: translate(0); clip-path: none; }
+  }
+
+  @keyframes glitch2 {
+    0%,88%,100% { transform: translate(0); }
+    89% { transform: translate(4px, 0); color: var(--glitch-color2); }
+    90% { transform: translate(-4px, 2px); color: var(--neon-pink); }
+    91% { transform: translate(0); }
+  }
+
+  .hero-subtitle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.75rem, 2.5vw, 1rem);
+    color: var(--text-dim);
+    text-align: center;
+    margin: 20px 0 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .hero-subtitle span {
+    color: var(--neon-yellow);
+    text-shadow: 0 0 8px var(--neon-yellow);
+  }
+
+  .skills-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 24px 0 40px;
+  }
+
+  .skill-tag {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.42rem;
+    padding: 6px 12px;
+    border: 1px solid;
+    letter-spacing: 1px;
+    animation: tagFloat 3s ease-in-out infinite;
+  }
+  .skill-tag:nth-child(1) { color: var(--neon-cyan); border-color: var(--neon-cyan); text-shadow: 0 0 6px var(--neon-cyan); animation-delay: 0s; }
+  .skill-tag:nth-child(2) { color: var(--neon-pink); border-color: var(--neon-pink); text-shadow: 0 0 6px var(--neon-pink); animation-delay: 0.4s; }
+  .skill-tag:nth-child(3) { color: var(--neon-yellow); border-color: var(--neon-yellow); text-shadow: 0 0 6px var(--neon-yellow); animation-delay: 0.8s; }
+
+  @keyframes tagFloat {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.5rem;
+    padding: 12px 22px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: rgba(255,255,255,0.1);
+    transition: left 0.3s;
+  }
+
+  .btn:hover::before { left: 100%; }
+
+  .btn-primary {
+    background: var(--neon-cyan);
+    color: #000;
+    box-shadow: 0 0 20px rgba(0,255,255,0.4);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 0 35px rgba(0,255,255,0.7);
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--neon-pink);
+    border: 2px solid var(--neon-pink);
+    box-shadow: 0 0 15px rgba(255,0,170,0.2);
+  }
+  .btn-secondary:hover {
+    background: rgba(255,0,170,0.1);
+    box-shadow: 0 0 30px rgba(255,0,170,0.5);
+    transform: translateY(-2px);
+  }
+
+  /* VHS tape decoration */
+  .vhs-tape {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    opacity: 0.12;
+    font-family: 'VT323', monospace;
+    font-size: 5rem;
+    color: var(--neon-cyan);
+    transform: rotate(-15deg);
+    pointer-events: none;
+  }
+
+  /* REC indicator */
+  .rec-indicator {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.45rem;
+    color: #ff3333;
+  }
+
+  .rec-dot {
+    width: 8px; height: 8px;
+    background: #ff3333;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #ff3333;
+    animation: recBlink 1s steps(1) infinite;
+  }
+
+  @keyframes recBlink {
+    0%,49% { opacity: 1; }
+    50%,100% { opacity: 0; }
+  }
+
+  /* ABOUT SECTION */
+  .about-section {
+    padding: 80px 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-family: 'VT323', monospace;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    color: var(--neon-cyan);
+    text-shadow: 0 0 15px var(--neon-cyan);
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .section-title::before {
+    content: '▶';
+    color: var(--neon-pink);
+    font-size: 0.7em;
+    text-shadow: 0 0 10px var(--neon-pink);
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, var(--neon-cyan), transparent);
+    margin-left: 10px;
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+
+  .about-card {
+    background: rgba(0,255,255,0.03);
+    border: 1px solid rgba(0,255,255,0.15);
+    padding: 28px;
+    position: relative;
+    transition: all 0.3s;
+  }
+
+  .about-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 40px; height: 2px;
+    background: var(--neon-cyan);
+  }
+
+  .about-card:hover {
+    border-color: rgba(0,255,255,0.5);
+    box-shadow: 0 0 20px rgba(0,255,255,0.08);
+    transform: translateY(-3px);
+  }
+
+  .about-card h3 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.5rem;
+    color: var(--neon-pink);
+    margin-bottom: 14px;
+    text-shadow: 0 0 6px var(--neon-pink);
+    letter-spacing: 1px;
+  }
+
+  .about-card p {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+
+  /* ===================== VIDEOS PAGE ===================== */
+  #page-videos {
+    background: radial-gradient(ellipse at 20% 50%, #000820 0%, var(--dark-bg) 60%);
+    padding-top: 52px;
+    min-height: 100vh;
+  }
+
+  .videos-header {
+    padding: 60px 20px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .videos-intro {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    margin-top: 10px;
+    letter-spacing: 2px;
+  }
+
+  /* BENTO GRID */
+  .bento-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 20px 80px;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: auto;
+    gap: 14px;
+  }
+
+  /* 8 cards with dynamic layout */
+  .video-card { grid-column: span 4; }
+  .video-card:nth-child(1) { grid-column: span 8; }
+  .video-card:nth-child(4) { grid-column: span 8; }
+  .video-card:nth-child(5) { grid-column: span 4; }
+  .video-card:nth-child(7) { grid-column: span 6; }
+  .video-card:nth-child(8) { grid-column: span 6; }
+
+  .video-card {
+    background: #0a0a12;
+    border: 1px solid rgba(0,255,255,0.12);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s;
+    group: true;
+  }
+
+  .video-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,255,255,0.04) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .video-card:hover {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 30px rgba(0,255,255,0.15), inset 0 0 30px rgba(0,255,255,0.03);
+    transform: translateY(-3px);
+  }
+
+  .video-card:hover .card-overlay { opacity: 1; }
+  .video-card:hover .play-btn { transform: scale(1.1); }
+
+  /* Placeholder area */
+  .video-placeholder {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #070710;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Static noise on placeholder */
+  .video-placeholder::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+    opacity: 0.5;
+  }
+
+  /* Scan line on placeholder */
+  .video-placeholder::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    height: 2px;
+    background: rgba(0,255,255,0.3);
+    animation: scanLine 3s linear infinite;
+    box-shadow: 0 0 10px rgba(0,255,255,0.5);
+  }
+
+  @keyframes scanLine {
+    from { top: 0; }
+    to { top: 100%; }
+  }
+
+  .placeholder-text {
+    font-family: 'VT323', monospace;
+    font-size: 1.6rem;
+    color: rgba(0,255,255,0.2);
+    text-align: center;
+    z-index: 2;
+    line-height: 1.4;
+  }
+
+  .placeholder-text .icon { font-size: 2.5rem; display: block; margin-bottom: 4px; }
+
+  .placeholder-iframe {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0; left: 0;
+    border: none;
+    display: none;
+  }
+
+  .card-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 5;
+  }
+
+  .play-btn {
+    width: 56px; height: 56px;
+    background: var(--neon-cyan);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    box-shadow: 0 0 20px rgba(0,255,255,0.5);
+  }
+
+  .play-btn svg { fill: #000; width: 20px; }
+
+  .card-info {
+    padding: 14px 16px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .card-number {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.38rem;
+    color: var(--neon-pink);
+    text-shadow: 0 0 6px var(--neon-pink);
+    margin-bottom: 6px;
+    letter-spacing: 2px;
+  }
+
+  .card-title {
+    font-family: 'VT323', monospace;
+    font-size: 1.3rem;
+    color: var(--text-main);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  .card-meta {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .card-meta span { display: flex; align-items: center; gap: 4px; }
+
+  /* URL input modal */
+  .url-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .url-modal.open { display: flex; }
+
+  .url-modal-box {
+    background: #0a0a14;
+    border: 1px solid var(--neon-cyan);
+    box-shadow: 0 0 40px rgba(0,255,255,0.2);
+    padding: 32px;
+    max-width: 500px;
+    width: 100%;
+  }
+
+  .url-modal-box h3 {
+    font-family: 'VT323', monospace;
+    font-size: 1.8rem;
+    color: var(--neon-cyan);
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px var(--neon-cyan);
+  }
+
+  .url-input {
+    width: 100%;
+    background: #000;
+    border: 1px solid rgba(0,255,255,0.3);
+    color: var(--neon-green);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    padding: 10px 14px;
+    outline: none;
+    margin-bottom: 10px;
+    transition: border-color 0.2s;
+  }
+
+  .url-input:focus { border-color: var(--neon-cyan); box-shadow: 0 0 10px rgba(0,255,255,0.15); }
+
+  .url-hint {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+  }
+
+  .modal-btns { display: flex; gap: 10px; }
+
+  .btn-sm {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.42rem;
+    padding: 10px 16px;
+    cursor: pointer;
+    border: none;
+    letter-spacing: 1px;
+  }
+
+  .btn-confirm { background: var(--neon-cyan); color: #000; }
+  .btn-cancel { background: transparent; color: var(--text-dim); border: 1px solid var(--text-dim); }
+  .btn-clear { background: transparent; color: #ff4444; border: 1px solid #ff4444; }
+  .btn-confirm:hover { box-shadow: 0 0 15px rgba(0,255,255,0.4); }
+
+  /* ===================== CONTACT PAGE ===================== */
+  #page-contact {
+    background: radial-gradient(ellipse at 80% 20%, #1a000a 0%, var(--dark-bg) 60%);
+    padding-top: 52px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 60px;
+  }
+
+  .contact-wrap {
+    max-width: 800px;
+    width: 100%;
+    padding: 60px 20px;
+  }
+
+  .contact-intro {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    margin-top: 10px;
+    margin-bottom: 50px;
+    letter-spacing: 2px;
+  }
+
+  .contact-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .contact-card {
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    transition: all 0.3s;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .contact-card::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+  }
+
+  .contact-card.email::after { background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
+  .contact-card.discord::after { background: #5865F2; box-shadow: 0 0 10px #5865F2; }
+  .contact-card.twitter::after { background: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink); }
+
+  .contact-card:hover {
+    transform: translateX(6px);
+    background: rgba(255,255,255,0.03);
+  }
+
+  .contact-card.email:hover { border-color: rgba(0,255,255,0.4); box-shadow: 0 0 20px rgba(0,255,255,0.08); }
+  .contact-card.discord:hover { border-color: rgba(88,101,242,0.4); box-shadow: 0 0 20px rgba(88,101,242,0.08); }
+  .contact-card.twitter:hover { border-color: rgba(255,0,170,0.4); box-shadow: 0 0 20px rgba(255,0,170,0.08); }
+
+  .contact-icon {
+    width: 54px; height: 54px;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    flex-shrink: 0;
+  }
+
+  .contact-card.email .contact-icon { background: rgba(0,255,255,0.1); border: 1px solid rgba(0,255,255,0.3); }
+  .contact-card.discord .contact-icon { background: rgba(88,101,242,0.1); border: 1px solid rgba(88,101,242,0.3); }
+  .contact-card.twitter .contact-icon { background: rgba(255,0,170,0.1); border: 1px solid rgba(255,0,170,0.3); }
+
+  .contact-info { flex: 1; }
+
+  .contact-platform {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.5rem;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .contact-card.email .contact-platform { color: var(--neon-cyan); text-shadow: 0 0 6px var(--neon-cyan); }
+  .contact-card.discord .contact-platform { color: #5865F2; text-shadow: 0 0 6px #5865F2; }
+  .contact-card.twitter .contact-platform { color: var(--neon-pink); text-shadow: 0 0 6px var(--neon-pink); }
+
+  .contact-handle {
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem;
+    color: var(--text-main);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  .contact-desc {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  .contact-arrow {
+    font-family: 'VT323', monospace;
+    font-size: 2rem;
+    color: var(--text-dim);
+    transition: transform 0.2s, color 0.2s;
+  }
+
+  .contact-card:hover .contact-arrow { transform: translateX(6px); }
+  .contact-card.email:hover .contact-arrow { color: var(--neon-cyan); }
+  .contact-card.discord:hover .contact-arrow { color: #5865F2; }
+  .contact-card.twitter:hover .contact-arrow { color: var(--neon-pink); }
+
+  /* CRT bottom info */
+  .crt-footer {
+    margin-top: 50px;
+    text-align: center;
+    font-family: 'VT323', monospace;
+    font-size: 1rem;
+    color: rgba(0,255,255,0.2);
+    letter-spacing: 3px;
+    line-height: 1.8;
+  }
+
+  /* ===================== FOOTER ===================== */
+  .site-footer {
+    border-top: 1px solid rgba(0,255,255,0.1);
+    padding: 20px;
+    text-align: center;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.15);
+    font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 2px;
+  }
+
+  .site-footer span {
+    color: var(--neon-pink);
+    text-shadow: 0 0 6px var(--neon-pink);
+  }
+
+  /* VHS TIMECODE */
+  .timecode {
+    position: fixed;
+    bottom: 14px;
+    left: 14px;
+    font-family: 'VT323', monospace;
+    font-size: 1rem;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 2px;
+    z-index: 500;
+    pointer-events: none;
+  }
+
+  /* ===================== RESPONSIVE ===================== */
+  @media (max-width: 768px) {
+    .nav-links { display: none; flex-direction: column; position: absolute; top: 52px; left: 0; right: 0; background: rgba(8,8,8,0.98); border-bottom: 1px solid var(--neon-cyan); padding: 10px 0; }
+    .nav-links.open { display: flex; }
+    .nav-links a { padding: 12px 20px; font-size: 0.4rem; }
+    .hamburger { display: flex; }
+    .about-grid { grid-template-columns: 1fr; }
+    .bento-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .video-card { grid-column: span 1 !important; }
+    .video-card:nth-child(1), .video-card:nth-child(4) { grid-column: span 2 !important; }
+    .video-card:nth-child(7), .video-card:nth-child(8) { grid-column: span 1 !important; }
+    .contact-card { padding: 20px; gap: 16px; }
+    .contact-handle { font-size: 1.2rem; }
+    .hero::before { display: none; }
+  }
+
+  @media (max-width: 480px) {
+    .bento-grid { grid-template-columns: 1fr; }
+    .video-card { grid-column: span 1 !important; }
+    .skills-bar { gap: 8px; }
+    .cta-buttons { flex-direction: column; align-items: center; }
+    .modal-btns { flex-wrap: wrap; }
+  }
+
+  /* TRANSITIONS */
+  .page { animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* VHS horizontal glitch bar */
+  @keyframes vhsBar {
+    0%,95%,100% { opacity: 0; }
+    96% { opacity: 1; top: 30%; }
+    97% { top: 60%; }
+    98% { top: 10%; opacity: 0.5; }
+    99% { opacity: 0; }
+  }
+  .vhs-glitch-bar {
+    position: fixed;
+    left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(to right, transparent, var(--neon-cyan), var(--neon-pink), transparent);
+    pointer-events: none;
+    z-index: 9997;
+    opacity: 0;
+    animation: vhsBar 8s steps(1) infinite;
+  }
+
+  /* Hover cursor glow */
+  a, button, .btn, .nav-links a, .contact-card, .video-card {
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="vhs-glitch-bar"></div>
+
+<!-- TIMECODE -->
+<div class="timecode" id="timecode">00:00:00:00</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">▶ HAGTZU EDITOR</div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#" onclick="showPage('home')" class="active-link" id="nav-home">[ HOME ]</a></li>
+    <li><a href="#" onclick="showPage('videos')" id="nav-videos">[ WORK ]</a></li>
+    <li><a href="#" onclick="showPage('contact')" id="nav-contact">[ CONTACT ]</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ======================== HOME PAGE ======================== -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="rec-indicator">
+      <div class="rec-dot"></div> REC
+    </div>
+
+    <div class="vhs-badge">▶ PLAY — VIDEO EDITOR PORTFOLIO</div>
+
+    <h1 class="hero-title">
+      <span class="line1">HAG</span><span class="line2">TZU</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Motion &nbsp;·&nbsp; <span>VFX</span> &nbsp;·&nbsp; Edit &nbsp;·&nbsp; 3D
+    </p>
+
+    <div class="skills-bar">
+      <span class="skill-tag">◈ DAVINCI RESOLVE</span>
+      <span class="skill-tag">◈ AFTER EFFECTS</span>
+      <span class="skill-tag">◈ BLENDER</span>
+    </div>
+
+    <div class="cta-buttons">
+      <button class="btn btn-primary" onclick="showPage('videos')">▶ VER TRABALHOS</button>
+      <button class="btn btn-secondary" onclick="showPage('contact')">ENTRAR EM CONTATO</button>
+    </div>
+
+    <div class="vhs-tape">▬▬▬</div>
+  </section>
+
+  <section class="about-section">
+    <h2 class="section-title">SOBRE MIM</h2>
+    <div class="about-grid">
+      <div class="about-card">
+        <h3>// WHO I AM</h3>
+        <p>Editor de vídeo apaixonado por contar histórias através do movimento, cor e som. Cada frame é uma decisão criativa.</p>
+      </div>
+      <div class="about-card">
+        <h3>// WORKFLOW</h3>
+        <p>Do corte bruto ao color grading final. Trabalho com DaVinci Resolve para edição e correção de cor profissional.</p>
+      </div>
+      <div class="about-card">
+        <h3>// VFX & MOTION</h3>
+        <p>After Effects para compositing e motion graphics. Blender para animações 3D e efeitos visuais cinematográficos.</p>
+      </div>
+      <div class="about-card">
+        <h3>// DISPONÍVEL PARA</h3>
+        <p>Projetos comerciais, vídeos para redes sociais, trailers, clipes musicais, documentários e motion design.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    VHS.STUDIO — TODOS OS DIREITOS RESERVADOS &nbsp;|&nbsp; FEITO COM <span>♥</span> E MUITA CAFEÍNA
+  </footer>
+</div>
+
+<!-- ======================== VIDEOS PAGE ======================== -->
+<div class="page" id="page-videos">
+  <div class="videos-header">
+    <h2 class="section-title">MEUS TRABALHOS</h2>
+    <p class="videos-intro">// Clique em qualquer card para adicionar seu vídeo (YouTube, Vimeo ou URL)</p>
+  </div>
+
+  <div class="bento-grid" id="bentoGrid">
+    <!-- 8 video cards generated by JS -->
+  </div>
+
+  <footer class="site-footer">
+    VHS.STUDIO — PORTFOLIO DE VÍDEO &nbsp;|&nbsp; <span>8 PROJECTS</span>
+  </footer>
+</div>
+
+<!-- ======================== CONTACT PAGE ======================== -->
+<div class="page" id="page-contact">
+  <div class="contact-wrap">
+    <h2 class="section-title">CONTATO</h2>
+    <p class="contact-intro">// Vamos criar algo incrível juntos?</p>
+
+    <div class="contact-cards">
+
+      <div class="contact-card email" onclick="copyToClipboard('hagtocomp@gmail.com', this)">
+        <div class="contact-icon">✉</div>
+        <div class="contact-info">
+          <div class="contact-platform">EMAIL</div>
+          <div class="contact-handle" id="email-handle">hagtocomp@gmail.com</div>
+          <div class="contact-desc">Clique para copiar o endereço</div>
+        </div>
+        <div class="contact-arrow">▶</div>
+      </div>
+
+      <a class="contact-card discord" href="https://discord.com/users/seudiscord" target="_blank">
+        <div class="contact-icon">⚡</div>
+        <div class="contact-info">
+          <div class="contact-platform">DISCORD</div>
+          <div class="contact-handle">hagtzu</div>
+          <div class="contact-desc">Abrir Discord</div>
+        </div>
+        <div class="contact-arrow">▶</div>
+      </a>
+
+      <a class="contact-card twitter" href="https://x.com/HAGTZU_oficial" target="_blank">
+        <div class="contact-icon">✕</div>
+        <div class="contact-info">
+          <div class="contact-platform">TWITTER / X</div>
+          <div class="contact-handle">@HAGTZU_oficial</div>
+          <div class="contact-desc">Abrir Twitter / X</div>
+        </div>
+        <div class="contact-arrow">▶</div>
+      </a>
+
+    </div>
+
+    <div class="crt-footer">
+      ══════════════════════════<br>
+      VHS.STUDIO — DISPONÍVEL PARA PROJETOS<br>
+      RESPOSTA EM ATÉ 24H<br>
+      ══════════════════════════
+    </div>
+  </div>
+</div>
+
+<!-- URL MODAL -->
+<div class="url-modal" id="urlModal">
+  <div class="url-modal-box">
+    <h3>▶ INSERIR VÍDEO</h3>
+    <input type="text" class="url-input" id="videoUrlInput" placeholder="Cole a URL do YouTube ou Vimeo..." />
+    <p class="url-hint">// Ex: https://www.youtube.com/watch?v=XXXXX<br>// Ex: https://vimeo.com/XXXXX</p>
+    <div class="modal-btns">
+      <button class="btn-sm btn-confirm" onclick="confirmVideo()">▶ CARREGAR</button>
+      <button class="btn-sm btn-clear" onclick="clearVideo()">✕ REMOVER</button>
+      <button class="btn-sm btn-cancel" onclick="closeModal()">CANCELAR</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ==================== NAVIGATION ====================
+  function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active-link'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.getElementById('nav-' + page).classList.add('active-link');
+    window.scrollTo(0,0);
+    const nav = document.getElementById('navLinks');
+    nav.classList.remove('open');
+  }
+
+  function toggleMenu() {
+    document.getElementById('navLinks').classList.toggle('open');
+  }
+
+  // ==================== TIMECODE ====================
+  function updateTimecode() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    const f = String(Math.floor(now.getMilliseconds()/33)).padStart(2,'0');
+    document.getElementById('timecode').textContent = h+':'+m+':'+s+':'+f;
+  }
+  setInterval(updateTimecode, 33);
+
+  // ==================== VIDEO CARDS ====================
+  const cardData = [
+    { title: 'PROJECT 001', tag: 'EDIÇÃO', desc: 'Clique para adicionar' },
+    { title: 'PROJECT 002', tag: 'VFX', desc: 'Clique para adicionar' },
+    { title: 'PROJECT 003', tag: '3D', desc: 'Clique para adicionar' },
+    { title: 'PROJECT 004', tag: 'MOTION', desc: 'Clique para adicionar' },
+    { title: 'PROJECT 005', tag: 'COLOR', desc: 'Clique para adicionar' },
+    { title: 'PROJECT 006', tag: 'COMPOSITING', desc: 'Clique para adicionar' },
+    { title: 'PROJECT 007', tag: 'TRAILER', desc: 'Clique para adicionar' },
+    { title: 'PROJECT 008', tag: 'CLIPE', desc: 'Clique para adicionar' },
+  ];
+
+  let currentCardIndex = null;
+  const videoUrls = JSON.parse(localStorage.getItem('vhsVideos') || '{}');
+
+  function getEmbedUrl(url) {
+    // YouTube
+    let match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?]+)/);
+    if (match) return 'https://www.youtube.com/embed/' + match[1] + '?autoplay=0';
+    // Vimeo
+    match = url.match(/vimeo\.com\/(\d+)/);
+    if (match) return 'https://player.vimeo.com/video/' + match[1];
+    // Direct
+    return url;
+  }
+
+  function buildCards() {
+    const grid = document.getElementById('bentoGrid');
+    grid.innerHTML = '';
+    cardData.forEach((card, i) => {
+      const hasVideo = videoUrls[i];
+      const embedUrl = hasVideo ? getEmbedUrl(hasVideo) : null;
+
+      const div = document.createElement('div');
+      div.className = 'video-card';
+      div.onclick = () => openModal(i);
+      div.innerHTML = `
+        <div class="video-placeholder">
+          ${embedUrl
+            ? `<iframe class="placeholder-iframe" style="display:block" src="${embedUrl}" allowfullscreen allow="autoplay"></iframe>`
+            : `<div class="placeholder-text">
+                <span class="icon">▶</span>
+                SEU VÍDEO AQUI<br>
+                <small style="font-size:0.8rem;color:rgba(0,255,255,0.15)">CLIQUE PARA ADICIONAR</small>
+              </div>`
+          }
+          <div class="card-overlay">
+            <div class="play-btn">
+              <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="card-info">
+          <div class="card-number">// TAPE-${String(i+1).padStart(3,'0')}</div>
+          <div class="card-title">${card.title}</div>
+          <div class="card-meta">
+            <span>◈ ${card.tag}</span>
+            <span>${hasVideo ? '✔ CARREGADO' : '○ AGUARDANDO'}</span>
+          </div>
+        </div>
+      `;
+      grid.appendChild(div);
+    });
+  }
+
+  function openModal(index) {
+    currentCardIndex = index;
+    document.getElementById('videoUrlInput').value = videoUrls[index] || '';
+    document.getElementById('urlModal').classList.add('open');
+    setTimeout(() => document.getElementById('videoUrlInput').focus(), 100);
+  }
+
+  function closeModal() {
+    document.getElementById('urlModal').classList.remove('open');
+    currentCardIndex = null;
+  }
+
+  function confirmVideo() {
+    const url = document.getElementById('videoUrlInput').value.trim();
+    if (!url) return;
+    videoUrls[currentCardIndex] = url;
+    localStorage.setItem('vhsVideos', JSON.stringify(videoUrls));
+    buildCards();
+    closeModal();
+  }
+
+  function clearVideo() {
+    delete videoUrls[currentCardIndex];
+    localStorage.setItem('vhsVideos', JSON.stringify(videoUrls));
+    buildCards();
+    closeModal();
+  }
+
+  // Enter key confirm
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+    if (e.key === 'Enter' && document.getElementById('urlModal').classList.contains('open')) confirmVideo();
+  });
+
+  // Click outside modal
+  document.getElementById('urlModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  // ==================== COPY TO CLIPBOARD ====================
+  function copyToClipboard(text, el) {
+    navigator.clipboard.writeText(text).then(() => {
+      const handle = el.querySelector('.contact-desc');
+      const orig = handle.textContent;
+      handle.textContent = '✔ COPIADO!';
+      handle.style.color = 'var(--neon-green)';
+      setTimeout(() => {
+        handle.textContent = orig;
+        handle.style.color = '';
+      }, 2000);
+    });
+  }
+
+  // Init
+  buildCards();
+</script>
+</body>
+</html>
