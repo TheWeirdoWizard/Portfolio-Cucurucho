@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Portfolio — 3D Modeler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --peri:#8B7FCC;--peri-light:#C4BEE8;--peri-pale:#EAE7F7;--peri-deep:#5C4FA8;--peri-dark:#3A2F7A;
+  --lavender:#B8AEDE;--violet:#6B5BA0;--amethyst:#7C5CBF;--mauve:#9B89C4;--plum:#2E2358;
+  --plum-mid:#3D2F6E;--cream:#F9F7FF;--white:#FFFFFF;--gold:#C8A84B;--gold-light:#E8D080;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Cormorant Garamond',Georgia,serif;background:var(--cream);color:var(--peri-dark);overflow-x:hidden;}
+
+/* ── NAV ── */
+nav{background:var(--plum);padding:1rem 2.5rem;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:100;}
+.nav-brand{font-family:'Cinzel',serif;color:var(--gold-light);font-size:1rem;letter-spacing:.18em;font-weight:600;}
+.nav-links{display:flex;gap:2.2rem;list-style:none;}
+.nav-links a{font-family:'Cinzel',serif;color:var(--peri-light);text-decoration:none;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;transition:color .3s;}
+.nav-links a:hover{color:var(--gold-light);}
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;}
+.nav-hamburger span{display:block;width:22px;height:1.5px;background:var(--peri-light);transition:all .3s;}
+
+/* ── HERO ── */
+.hero{min-height:94vh;background:#2E2358;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:4rem 2rem;}
+.hero-bg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+.hero-content{text-align:center;position:relative;z-index:2;max-width:700px;}
+.hero-eyebrow{font-family:'Cinzel',serif;color:var(--gold);font-size:.7rem;letter-spacing:.38em;text-transform:uppercase;margin-bottom:1.3rem;animation:fadeUp .9s ease both;}
+.hero-title{font-family:'Cinzel',serif;color:var(--white);font-size:clamp(2.6rem,6vw,4.5rem);font-weight:700;line-height:1.12;margin-bottom:.6rem;animation:fadeUp .9s .15s ease both;}
+.hero-subtitle{font-family:'Cormorant Garamond',serif;color:var(--peri-light);font-size:clamp(1.1rem,2.5vw,1.55rem);font-style:italic;font-weight:300;margin-bottom:2.4rem;letter-spacing:.06em;animation:fadeUp .9s .3s ease both;}
+.hero-divider{width:130px;height:1px;background:var(--gold);margin:0 auto 2rem;position:relative;animation:fadeUp .9s .4s ease both;}
+.hero-divider::before,.hero-divider::after{content:'◆';position:absolute;top:50%;transform:translateY(-50%);color:var(--gold);font-size:8px;}
+.hero-divider::before{left:-13px;}.hero-divider::after{right:-13px;}
+.hero-cta{display:inline-block;padding:.9rem 2.8rem;background:transparent;border:1.5px solid var(--gold);color:var(--gold-light);font-family:'Cinzel',serif;font-size:.76rem;letter-spacing:.22em;text-decoration:none;transition:all .3s;cursor:pointer;animation:fadeUp .9s .5s ease both;}
+.hero-cta:hover{background:var(--gold);color:var(--plum);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── SECTIONS ── */
+.full-wrap{padding:5.5rem 2rem;background:var(--white);}
+.full-wrap-tinted{padding:5.5rem 2rem;background:var(--peri-pale);}
+.full-wrap-dark{padding:5.5rem 2rem;background:#2E2358;position:relative;overflow:hidden;}
+.inner{max-width:1100px;margin:0 auto;}
+.section-header{text-align:center;margin-bottom:3.5rem;}
+.section-eyebrow{font-family:'Cinzel',serif;color:var(--amethyst);font-size:.66rem;letter-spacing:.36em;text-transform:uppercase;margin-bottom:.8rem;}
+.section-eyebrow-light{font-family:'Cinzel',serif;color:var(--gold);font-size:.66rem;letter-spacing:.36em;text-transform:uppercase;margin-bottom:.8rem;}
+.section-title{font-family:'Cinzel',serif;color:var(--peri-dark);font-size:clamp(1.6rem,4vw,2.4rem);font-weight:600;margin-bottom:1rem;}
+.section-title-light{font-family:'Cinzel',serif;color:var(--white);font-size:clamp(1.6rem,4vw,2.4rem);font-weight:600;margin-bottom:1rem;}
+.section-rule{width:80px;height:1.5px;background:var(--peri);margin:0 auto 1rem;}
+.section-rule-gold{width:80px;height:1.5px;background:var(--gold);margin:0 auto 1rem;}
+.section-desc{color:var(--violet);font-size:1.05rem;font-style:italic;max-width:480px;margin:0 auto;line-height:1.75;}
+.section-desc-light{color:var(--peri-light);font-size:1.05rem;font-style:italic;max-width:480px;margin:0 auto;line-height:1.75;}
+
+/* ── ABOUT ── */
+.about-inner{display:grid;grid-template-columns:1fr 1.5fr;gap:5rem;align-items:center;}
+.about-frame{position:relative;aspect-ratio:3/4;max-width:340px;margin:0 auto;}
+.about-frame-border{position:absolute;inset:0;border:2px solid var(--peri-light);}
+.about-frame-border::before{content:'';position:absolute;inset:9px;border:1px solid var(--gold);opacity:.55;}
+.about-portrait-placeholder{width:100%;height:100%;background:#3D2F6E;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.9rem;position:relative;overflow:hidden;}
+.portrait-bg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.18;}
+.portrait-icon{width:76px;height:76px;border-radius:50%;background:var(--amethyst);display:flex;align-items:center;justify-content:center;position:relative;z-index:1;}
+.portrait-label{font-family:'Cinzel',serif;font-size:.62rem;color:var(--peri-light);letter-spacing:.22em;text-transform:uppercase;position:relative;z-index:1;}
+.corner-ornament{position:absolute;width:26px;height:26px;border-color:var(--gold);border-style:solid;opacity:.75;}
+.corner-ornament.tl{top:-5px;left:-5px;border-width:2px 0 0 2px;}
+.corner-ornament.tr{top:-5px;right:-5px;border-width:2px 2px 0 0;}
+.corner-ornament.bl{bottom:-5px;left:-5px;border-width:0 0 2px 2px;}
+.corner-ornament.br{bottom:-5px;right:-5px;border-width:0 2px 2px 0;}
+.about-text h3{font-family:'Cinzel',serif;font-size:1.55rem;color:var(--peri-dark);margin-bottom:.3rem;font-weight:600;}
+.about-text .title-role{font-style:italic;color:var(--amethyst);font-size:1.05rem;margin-bottom:1.5rem;}
+.about-text p{color:var(--plum-mid);font-size:1.05rem;line-height:1.9;margin-bottom:1.2rem;}
+.skills-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.5rem;}
+.skill-tag{padding:.35rem 1rem;border:1px solid var(--peri-light);color:var(--violet);font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;background:var(--peri-pale);}
+
+/* ── WORK ── */
+.work-filter{display:flex;justify-content:center;gap:.7rem;flex-wrap:wrap;margin-bottom:3rem;}
+.filter-btn{padding:.45rem 1.4rem;border:1px solid var(--peri);background:transparent;color:var(--violet);font-family:'Cinzel',serif;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .25s;}
+.filter-btn.active,.filter-btn:hover{background:var(--peri);color:var(--white);border-color:var(--peri);}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:2rem;}
+.gallery-card{background:var(--white);border:1px solid var(--peri-light);position:relative;overflow:hidden;transition:transform .3s;}
+.gallery-card:hover{transform:translateY(-5px);}
+.gallery-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--peri-deep),var(--amethyst),var(--mauve));}
+.gallery-img-placeholder{width:100%;aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;}
+.gallery-img-placeholder.p1{background:linear-gradient(135deg,#DDD8F5 0%,#B8AEDE 100%);}
+.gallery-img-placeholder.p2{background:linear-gradient(135deg,#C8BEEB 0%,#9B89C4 100%);}
+.gallery-img-placeholder.p3{background:linear-gradient(135deg,#E4E0F7 0%,#7C5CBF 100%);}
+.gallery-img-placeholder.p4{background:linear-gradient(135deg,#BDB5E0 0%,#5C4FA8 100%);}
+.gallery-img-placeholder.p5{background:linear-gradient(135deg,#D5D0F0 0%,#6B5BA0 100%);}
+.gallery-img-placeholder.p6{background:linear-gradient(135deg,#C0B8E8 0%,#4A3870 100%);}
+.placeholder-text{font-family:'Cinzel',serif;font-size:.62rem;color:#fff;letter-spacing:.22em;text-transform:uppercase;opacity:.8;}
+.gallery-card-body{padding:1.2rem 1.4rem 1.4rem;}
+.gallery-card-category{font-family:'Cinzel',serif;font-size:.58rem;color:var(--amethyst);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.4rem;}
+.gallery-card-title{font-family:'Cormorant Garamond',serif;font-size:1.22rem;color:var(--peri-dark);font-weight:600;margin-bottom:.4rem;}
+.gallery-card-desc{font-size:.92rem;color:var(--violet);font-style:italic;line-height:1.65;}
+.gallery-card-meta{display:flex;justify-content:space-between;align-items:center;margin-top:1rem;padding-top:.8rem;border-top:1px solid var(--peri-pale);}
+.card-software{font-family:'Cinzel',serif;font-size:.58rem;color:var(--mauve);letter-spacing:.1em;text-transform:uppercase;}
+.card-view-btn{font-family:'Cinzel',serif;font-size:.58rem;color:var(--peri-deep);letter-spacing:.12em;text-transform:uppercase;background:none;border:none;border-bottom:1px solid var(--peri-light);padding-bottom:1px;cursor:pointer;}
+
+/* ── CONTACT ── */
+.contact-grid{display:grid;grid-template-columns:1fr 1.3fr;gap:5rem;align-items:start;}
+.contact-info h3{font-family:'Cinzel',serif;font-size:1.2rem;color:var(--white);margin-bottom:1rem;font-weight:600;}
+.contact-info p{color:var(--peri-light);font-size:1rem;line-height:1.85;font-style:italic;margin-bottom:2rem;}
+.social-links{display:flex;flex-direction:column;gap:1rem;}
+.social-item{display:flex;align-items:center;gap:1rem;padding:.85rem 1.1rem;border:1px solid rgba(180,160,220,.3);background:rgba(255,255,255,.06);transition:all .25s;text-decoration:none;}
+.social-item:hover{background:var(--peri);border-color:var(--peri);}
+.social-item:hover .social-label,.social-item:hover .social-handle{color:var(--white);}
+.social-icon-box{width:36px;height:36px;background:rgba(255,255,255,.1);border:1px solid rgba(180,160,220,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .25s;}
+.social-item:hover .social-icon-box{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.4);}
+.social-label{font-family:'Cinzel',serif;font-size:.62rem;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;display:block;margin-bottom:.15rem;transition:color .25s;}
+.social-handle{font-size:.95rem;color:var(--peri-light);transition:color .25s;}
+.contact-form{display:flex;flex-direction:column;gap:1.2rem;}
+.form-group{display:flex;flex-direction:column;gap:.4rem;}
+.form-group label{font-family:'Cinzel',serif;font-size:.63rem;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;}
+.form-group input,.form-group textarea{padding:.8rem 1rem;border:1px solid rgba(180,160,220,.35);background:rgba(255,255,255,.07);color:var(--white);font-family:'Cormorant Garamond',serif;font-size:1rem;outline:none;transition:border-color .3s;resize:none;}
+.form-group input::placeholder,.form-group textarea::placeholder{color:rgba(196,190,232,.45);}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--peri-light);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.submit-btn{padding:.95rem 2.5rem;background:transparent;border:1.5px solid var(--gold);color:var(--gold-light);font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;cursor:pointer;transition:all .3s;align-self:flex-start;}
+.submit-btn:hover{background:var(--gold);color:var(--plum);}
+
+/* contact bg stars */
+.contact-star{position:absolute;border-radius:50%;background:rgba(224,216,255,.7);pointer-events:none;}
+
+/* ── FOOTER ── */
+footer{background:var(--plum);border-top:2px solid var(--gold);padding:2.5rem 2rem;text-align:center;}
+.footer-brand{font-family:'Cinzel',serif;color:var(--gold-light);font-size:.9rem;letter-spacing:.28em;margin-bottom:.5rem;}
+.footer-note{font-style:italic;color:var(--mauve);font-size:.85rem;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .about-inner{grid-template-columns:1fr;gap:2.5rem;}
+  .about-frame{max-width:260px;}
+  .contact-grid{grid-template-columns:1fr;gap:2.5rem;}
+  .form-row{grid-template-columns:1fr;}
+}
+@media(max-width:768px){
+  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--plum);flex-direction:column;padding:1.5rem 2rem;gap:1.2rem;border-bottom:1px solid var(--gold);z-index:99;}
+  .nav-links.open{display:flex;}
+  .nav-hamburger{display:flex;}
+  .gallery-grid{grid-template-columns:1fr;}
+  .full-wrap,.full-wrap-tinted,.full-wrap-dark{padding:3.5rem 1.2rem;}
+}
+@media(max-width:480px){
+  nav{padding:.8rem 1rem;}
+  .work-filter{gap:.45rem;}
+  .filter-btn{padding:.38rem .9rem;font-size:.58rem;}
+}
+</style>
+</head>
+<body>
+
+<nav id="main-nav">
+  <div class="nav-brand">◆ &nbsp;Portfolio&nbsp; ◆</div>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#work">My Work</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero" id="home">
+  <svg class="hero-bg" viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <rect width="1200" height="700" fill="#2E2358"/>
+    <!-- orbital rings -->
+    <circle cx="600" cy="350" r="320" fill="none" stroke="#5C4FA8" stroke-width="0.6" opacity="0.5"/>
+    <circle cx="600" cy="350" r="240" fill="none" stroke="#7C5CBF" stroke-width="0.4" opacity="0.4"/>
+    <circle cx="600" cy="350" r="160" fill="none" stroke="#9B89C4" stroke-width="0.4" opacity="0.3"/>
+    <circle cx="600" cy="350" r="90"  fill="none" stroke="#B8AEDE" stroke-width="0.35" opacity="0.25"/>
+    <!-- tilted orbit ellipses -->
+    <ellipse cx="600" cy="350" rx="480" ry="180" fill="none" stroke="#5C4FA8" stroke-width="0.5" opacity="0.35"/>
+    <ellipse cx="600" cy="350" rx="460" ry="140" fill="none" stroke="#8B7FCC" stroke-width="0.4" opacity="0.3" transform="rotate(20 600 350)"/>
+    <ellipse cx="600" cy="350" rx="460" ry="140" fill="none" stroke="#8B7FCC" stroke-width="0.4" opacity="0.3" transform="rotate(-20 600 350)"/>
+    <ellipse cx="600" cy="350" rx="380" ry="100" fill="none" stroke="#9B89C4" stroke-width="0.35" opacity="0.2" transform="rotate(45 600 350)"/>
+    <!-- crosshair lines -->
+    <line x1="0"    y1="350" x2="1200" y2="350" stroke="#5C4FA8" stroke-width="0.4" opacity="0.3"/>
+    <line x1="600"  y1="0"   x2="600"  y2="700" stroke="#5C4FA8" stroke-width="0.4" opacity="0.3"/>
+    <line x1="0"    y1="0"   x2="1200" y2="700" stroke="#5C4FA8" stroke-width="0.3" opacity="0.18"/>
+    <line x1="1200" y1="0"   x2="0"    y2="700" stroke="#5C4FA8" stroke-width="0.3" opacity="0.18"/>
+    <!-- center mark -->
+    <circle cx="600" cy="350" r="5"  fill="#C8A84B" opacity="0.7"/>
+    <circle cx="600" cy="350" r="16" fill="none" stroke="#C8A84B" stroke-width="0.5" opacity="0.5"/>
+    <circle cx="600" cy="350" r="32" fill="none" stroke="#C8A84B" stroke-width="0.4" opacity="0.3"/>
+    <!-- Renaissance star polygons -->
+    <polygon points="600,80 612,116 650,116 620,138 631,175 600,154 569,175 580,138 550,116 588,116" fill="none" stroke="#C8A84B" stroke-width="1" opacity="0.55"/>
+    <polygon points="600,525 610,554 640,554 617,571 625,600 600,583 575,600 583,571 560,554 590,554" fill="none" stroke="#C8A84B" stroke-width="0.8" opacity="0.4"/>
+    <polygon points="110,180 117,200 138,200 122,212 128,232 110,220 92,232 98,212 82,200 103,200" fill="none" stroke="#B8AEDE" stroke-width="0.8" opacity="0.5"/>
+    <polygon points="1090,480 1097,500 1118,500 1102,512 1108,532 1090,520 1072,532 1078,512 1062,500 1083,500" fill="none" stroke="#B8AEDE" stroke-width="0.8" opacity="0.5"/>
+    <!-- small planetary circles -->
+    <circle cx="80"  cy="420" r="60" fill="none" stroke="#7C5CBF" stroke-width="0.5" opacity="0.4"/>
+    <circle cx="80"  cy="420" r="40" fill="none" stroke="#9B89C4" stroke-width="0.4" opacity="0.3"/>
+    <circle cx="1120" cy="200" r="70" fill="none" stroke="#7C5CBF" stroke-width="0.5" opacity="0.4"/>
+    <circle cx="1120" cy="200" r="46" fill="none" stroke="#9B89C4" stroke-width="0.4" opacity="0.3"/>
+    <!-- constellation curves -->
+    <path d="M180 350 Q240 270 320 340 Q400 410 480 350 Q520 310 560 350" stroke="#7C5CBF" stroke-width="0.5" fill="none" opacity="0.35"/>
+    <path d="M640 350 Q680 310 720 350 Q800 410 880 340 Q960 270 1020 350" stroke="#7C5CBF" stroke-width="0.5" fill="none" opacity="0.35"/>
+    <path d="M300 180 Q400 130 500 200 Q550 235 600 210" stroke="#9B89C4" stroke-width="0.4" fill="none" opacity="0.3"/>
+    <path d="M600 490 Q650 465 700 490 Q800 540 900 480" stroke="#9B89C4" stroke-width="0.4" fill="none" opacity="0.3"/>
+    <!-- gold diamond accents -->
+    <rect x="55"   y="170" width="8" height="8" fill="none" stroke="#C8A84B" stroke-width="0.7" opacity="0.45" transform="rotate(45 59 174)"/>
+    <rect x="1130" y="430" width="8" height="8" fill="none" stroke="#C8A84B" stroke-width="0.7" opacity="0.45" transform="rotate(45 1134 434)"/>
+    <rect x="330"  y="560" width="6" height="6" fill="none" stroke="#B8AEDE" stroke-width="0.6" opacity="0.5"  transform="rotate(45 333 563)"/>
+    <rect x="870"  y="100" width="6" height="6" fill="none" stroke="#B8AEDE" stroke-width="0.6" opacity="0.5"  transform="rotate(45 873 103)"/>
+    <!-- stars -->
+    <circle cx="245"  cy="130" r="2.5" fill="#E0D8FF" opacity="0.9"/>
+    <circle cx="380"  cy="80"  r="1.5" fill="#E0D8FF" opacity="0.7"/>
+    <circle cx="460"  cy="195" r="1"   fill="#B8AEDE" opacity="0.8"/>
+    <circle cx="150"  cy="280" r="2"   fill="#E0D8FF" opacity="0.75"/>
+    <circle cx="820"  cy="90"  r="2"   fill="#E0D8FF" opacity="0.8"/>
+    <circle cx="950"  cy="150" r="1.5" fill="#E0D8FF" opacity="0.7"/>
+    <circle cx="1050" cy="300" r="2.5" fill="#E0D8FF" opacity="0.85"/>
+    <circle cx="720"  cy="530" r="1.5" fill="#E0D8FF" opacity="0.7"/>
+    <circle cx="340"  cy="580" r="2"   fill="#E0D8FF" opacity="0.75"/>
+    <circle cx="480"  cy="620" r="1"   fill="#B8AEDE" opacity="0.6"/>
+    <circle cx="900"  cy="580" r="1.5" fill="#E0D8FF" opacity="0.7"/>
+    <circle cx="160"  cy="550" r="2"   fill="#B8AEDE" opacity="0.65"/>
+    <circle cx="1080" cy="620" r="1.5" fill="#E0D8FF" opacity="0.7"/>
+    <circle cx="70"   cy="150" r="1"   fill="#B8AEDE" opacity="0.6"/>
+    <circle cx="1150" cy="450" r="2"   fill="#E0D8FF" opacity="0.8"/>
+    <circle cx="290"  cy="440" r="1.5" fill="#C8A84B" opacity="0.45"/>
+    <circle cx="870"  cy="310" r="1.5" fill="#C8A84B" opacity="0.45"/>
+    <circle cx="430"  cy="50"  r="1.2" fill="#E0D8FF" opacity="0.65"/>
+    <circle cx="780"  cy="640" r="1.2" fill="#E0D8FF" opacity="0.65"/>
+    <circle cx="1000" cy="420" r="1.8" fill="#E0D8FF" opacity="0.7"/>
+    <circle cx="200"  cy="400" r="1.2" fill="#B8AEDE" opacity="0.55"/>
+    <!-- vignette ring -->
+    <circle cx="600" cy="350" r="420" fill="none" stroke="#2E2358" stroke-width="32" opacity="0.45"/>
+    <circle cx="600" cy="350" r="380" fill="none" stroke="#2E2358" stroke-width="8"  opacity="0.6"/>
+  </svg>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">3D Artist &nbsp;·&nbsp; Digital Sculptor</p>
+    <h1 class="hero-title">Your Name</h1>
+    <p class="hero-subtitle">Crafting worlds from light, shadow &amp; form</p>
+    <div class="hero-divider"></div>
+    <a class="hero-cta" href="#work">View Portfolio</a>
+  </div>
+</section>
+
+<!-- ── ABOUT ── -->
+<section id="about" class="full-wrap">
+  <div class="inner">
+    <div class="about-inner">
+      <div class="about-frame">
+        <div class="about-frame-border">
+          <div class="about-portrait-placeholder">
+            <svg class="portrait-bg" viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="150" cy="200" r="130" fill="none" stroke="#C8A84B" stroke-width="0.8"/>
+              <circle cx="150" cy="200" r="90"  fill="none" stroke="#B8AEDE" stroke-width="0.5"/>
+              <line x1="20"  y1="200" x2="280" y2="200" stroke="#C8A84B" stroke-width="0.4"/>
+              <line x1="150" y1="70"  x2="150" y2="330" stroke="#C8A84B" stroke-width="0.4"/>
+              <circle cx="150" cy="200" r="4" fill="#C8A84B" opacity="0.7"/>
+              <circle cx="60"  cy="80"  r="3" fill="#E0D8FF"/>
+              <circle cx="240" cy="320" r="2" fill="#E0D8FF"/>
+              <circle cx="230" cy="90"  r="2" fill="#E0D8FF"/>
+              <circle cx="70"  cy="310" r="3" fill="#E0D8FF"/>
+              <circle cx="150" cy="40"  r="1.5" fill="#E0D8FF"/>
+              <circle cx="260" cy="180" r="1.5" fill="#E0D8FF"/>
+            </svg>
+            <div class="portrait-icon">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                <circle cx="18" cy="13" r="7" stroke="#EAE7F7" stroke-width="1.5"/>
+                <path d="M4 32 C4 24 32 24 32 32" stroke="#EAE7F7" stroke-width="1.5" fill="none"/>
+              </svg>
+            </div>
+            <span class="portrait-label">Your Photo Here</span>
+          </div>
+        </div>
+        <div class="corner-ornament tl"></div>
+        <div class="corner-ornament tr"></div>
+        <div class="corner-ornament bl"></div>
+        <div class="corner-ornament br"></div>
+      </div>
+
+      <div class="about-text">
+        <div class="section-eyebrow" style="text-align:left;margin-bottom:.5rem;">About Me</div>
+        <h3>Your Full Name</h3>
+        <p class="title-role">3D Modeler &amp; Digital Artist</p>
+        <p>Inspired by the masters of the Renaissance — whose devotion to light, proportion, and the beauty of form shaped centuries of art — I bring that same reverence to the digital medium.</p>
+        <p>My work spans architectural visualization, character modeling, and environment design. Each piece is a study in shadow and illumination, where geometry becomes narrative.</p>
+        <p>With a deep passion for craftsmanship, I transform concepts into fully realized three-dimensional worlds, bridging the timeless and the contemporary.</p>
+        <div class="skills-row">
+          <span class="skill-tag">Blender</span>
+          <span class="skill-tag">ZBrush</span>
+          <span class="skill-tag">Maya</span>
+          <span class="skill-tag">Substance Painter</span>
+          <span class="skill-tag">Cinema 4D</span>
+          <span class="skill-tag">UV Mapping</span>
+          <span class="skill-tag">Rigging</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WORK ── -->
+<section id="work" class="full-wrap-tinted">
+  <div class="inner">
+    <div class="section-header">
+      <div class="section-eyebrow">Portfolio</div>
+      <h2 class="section-title">My Work</h2>
+      <div class="section-rule"></div>
+      <p class="section-desc">A curated collection of three-dimensional works, rendered in the spirit of the Renaissance ideal.</p>
+    </div>
+
+    <div class="work-filter">
+      <button class="filter-btn active" data-filter="all">All Works</button>
+      <button class="filter-btn" data-filter="character">Characters</button>
+      <button class="filter-btn" data-filter="environment">Environments</button>
+      <button class="filter-btn" data-filter="architecture">Architecture</button>
+      <button class="filter-btn" data-filter="concept">Concepts</button>
+    </div>
+
+    <div class="gallery-grid" id="gallery">
+      <div class="gallery-card" data-category="character">
+        <div class="gallery-img-placeholder p1">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" style="opacity:.5"><rect x="5" y="8" width="30" height="24" rx="2" stroke="white" stroke-width="1.5"/><circle cx="14" cy="17" r="3" stroke="white" stroke-width="1.2"/><path d="M5 28 L13 20 L20 26 L27 18 L35 28" stroke="white" stroke-width="1.2" fill="none"/></svg>
+          <span class="placeholder-text">Image Gallery</span>
+        </div>
+        <div class="gallery-card-body">
+          <div class="gallery-card-category">Character Model</div>
+          <div class="gallery-card-title">Project Title One</div>
+          <div class="gallery-card-desc">A sculpted figure study exploring classical anatomy and Renaissance proportion.</div>
+          <div class="gallery-card-meta"><span class="card-software">ZBrush · Blender</span><button class="card-view-btn">View Project</button></div>
+        </div>
+      </div>
+
+      <div class="gallery-card" data-category="environment">
+        <div class="gallery-img-placeholder p2">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" style="opacity:.5"><rect x="5" y="8" width="30" height="24" rx="2" stroke="white" stroke-width="1.5"/><circle cx="14" cy="17" r="3" stroke="white" stroke-width="1.2"/><path d="M5 28 L13 20 L20 26 L27 18 L35 28" stroke="white" stroke-width="1.2" fill="none"/></svg>
+          <span class="placeholder-text">Image Gallery</span>
+        </div>
+        <div class="gallery-card-body">
+          <div class="gallery-card-category">Environment</div>
+          <div class="gallery-card-title">Project Title Two</div>
+          <div class="gallery-card-desc">An immersive scene inspired by the architectural grandeur of the Italian Renaissance.</div>
+          <div class="gallery-card-meta"><span class="card-software">Maya · Substance</span><button class="card-view-btn">View Project</button></div>
+        </div>
+      </div>
+
+      <div class="gallery-card" data-category="architecture">
+        <div class="gallery-img-placeholder p3">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" style="opacity:.5"><rect x="5" y="8" width="30" height="24" rx="2" stroke="white" stroke-width="1.5"/><circle cx="14" cy="17" r="3" stroke="white" stroke-width="1.2"/><path d="M5 28 L13 20 L20 26 L27 18 L35 28" stroke="white" stroke-width="1.2" fill="none"/></svg>
+          <span class="placeholder-text">Image Gallery</span>
+        </div>
+        <div class="gallery-card-body">
+          <div class="gallery-card-category">Architecture</div>
+          <div class="gallery-card-title">Project Title Three</div>
+          <div class="gallery-card-desc">Detailed architectural visualization drawing on classical columns, arches, and vaults.</div>
+          <div class="gallery-card-meta"><span class="card-software">Cinema 4D</span><button class="card-view-btn">View Project</button></div>
+        </div>
+      </div>
+
+      <div class="gallery-card" data-category="concept">
+        <div class="gallery-img-placeholder p4">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" style="opacity:.5"><rect x="5" y="8" width="30" height="24" rx="2" stroke="white" stroke-width="1.5"/><circle cx="14" cy="17" r="3" stroke="white" stroke-width="1.2"/><path d="M5 28 L13 20 L20 26 L27 18 L35 28" stroke="white" stroke-width="1.2" fill="none"/></svg>
+          <span class="placeholder-text">Image Gallery</span>
+        </div>
+        <div class="gallery-card-body">
+          <div class="gallery-card-category">Concept Art</div>
+          <div class="gallery-card-title">Project Title Four</div>
+          <div class="gallery-card-desc">Conceptual digital sculpture merging classical mythology with contemporary aesthetics.</div>
+          <div class="gallery-card-meta"><span class="card-software">Blender · ZBrush</span><button class="card-view-btn">View Project</button></div>
+        </div>
+      </div>
+
+      <div class="gallery-card" data-category="character">
+        <div class="gallery-img-placeholder p5">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" style="opacity:.5"><rect x="5" y="8" width="30" height="24" rx="2" stroke="white" stroke-width="1.5"/><circle cx="14" cy="17" r="3" stroke="white" stroke-width="1.2"/><path d="M5 28 L13 20 L20 26 L27 18 L35 28" stroke="white" stroke-width="1.2" fill="none"/></svg>
+          <span class="placeholder-text">Image Gallery</span>
+        </div>
+        <div class="gallery-card-body">
+          <div class="gallery-card-category">Character Model</div>
+          <div class="gallery-card-title">Project Title Five</div>
+          <div class="gallery-card-desc">A portrait bust study in the tradition of Renaissance marble, realized in digital form.</div>
+          <div class="gallery-card-meta"><span class="card-software">ZBrush · Maya</span><button class="card-view-btn">View Project</button></div>
+        </div>
+      </div>
+
+      <div class="gallery-card" data-category="environment">
+        <div class="gallery-img-placeholder p6">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" style="opacity:.5"><rect x="5" y="8" width="30" height="24" rx="2" stroke="white" stroke-width="1.5"/><circle cx="14" cy="17" r="3" stroke="white" stroke-width="1.2"/><path d="M5 28 L13 20 L20 26 L27 18 L35 28" stroke="white" stroke-width="1.2" fill="none"/></svg>
+          <span class="placeholder-text">Image Gallery</span>
+        </div>
+        <div class="gallery-card-body">
+          <div class="gallery-card-category">Environment</div>
+          <div class="gallery-card-title">Project Title Six</div>
+          <div class="gallery-card-desc">An atmospheric scene bathed in golden-hour chiaroscuro lighting and volumetric atmosphere.</div>
+          <div class="gallery-card-meta"><span class="card-software">Blender · Cycles</span><button class="card-view-btn">View Project</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section id="contact" class="full-wrap-dark">
+  <!-- cosmic bg stars -->
+  <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+    <svg style="width:100%;height:100%;" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="100"  cy="80"  r="1.5" fill="#E0D8FF" opacity="0.6"/>
+      <circle cx="300"  cy="50"  r="1"   fill="#E0D8FF" opacity="0.5"/>
+      <circle cx="700"  cy="30"  r="2"   fill="#E0D8FF" opacity="0.55"/>
+      <circle cx="1000" cy="90"  r="1.5" fill="#E0D8FF" opacity="0.6"/>
+      <circle cx="1150" cy="200" r="1"   fill="#B8AEDE" opacity="0.5"/>
+      <circle cx="50"   cy="400" r="2"   fill="#E0D8FF" opacity="0.55"/>
+      <circle cx="400"  cy="520" r="1.5" fill="#B8AEDE" opacity="0.5"/>
+      <circle cx="900"  cy="500" r="1"   fill="#E0D8FF" opacity="0.5"/>
+      <circle cx="1100" cy="550" r="2"   fill="#E0D8FF" opacity="0.55"/>
+      <circle cx="550"  cy="580" r="1"   fill="#C8A84B" opacity="0.3"/>
+      <rect x="180"  y="100" width="5" height="5" fill="none" stroke="#C8A84B" stroke-width="0.6" opacity="0.35" transform="rotate(45 183 103)"/>
+      <rect x="1050" y="430" width="5" height="5" fill="none" stroke="#C8A84B" stroke-width="0.6" opacity="0.35" transform="rotate(45 1053 433)"/>
+      <circle cx="600"  cy="300" r="200" fill="none" stroke="#5C4FA8" stroke-width="0.4" opacity="0.25"/>
+      <circle cx="600"  cy="300" r="140" fill="none" stroke="#7C5CBF" stroke-width="0.3" opacity="0.2"/>
+    </svg>
+  </div>
+
+  <div class="inner" style="position:relative;z-index:1;">
+    <div class="section-header">
+      <div class="section-eyebrow-light">Get in Touch</div>
+      <h2 class="section-title-light">Contact</h2>
+      <div class="section-rule-gold"></div>
+      <p class="section-desc-light">Every great work begins with a conversation. Let us begin one.</p>
+    </div>
+
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h3>Find Me Here</h3>
+        <p>Whether you seek a collaborator for a grand artistic vision or a skilled hand for a commissioned piece, I welcome the dialogue across any of these channels.</p>
+        <div class="social-links">
+          <a class="social-item" href="mailto:hello@yourname.com">
+            <div class="social-icon-box">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="10" rx="1" stroke="#C4BEE8" stroke-width="1.2"/><path d="M1 4 L8 9 L15 4" stroke="#C4BEE8" stroke-width="1.2" fill="none"/></svg>
+            </div>
+            <div><span class="social-label">Email</span><span class="social-handle">hello@yourname.com</span></div>
+          </a>
+          <a class="social-item" href="#">
+            <div class="social-icon-box">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 11 C2 7 4 4 8 3 C9 5 10 7 9 9 L11 13 C9 14 6 14 4 12 Z" stroke="#C4BEE8" stroke-width="1.1" fill="none"/><circle cx="8" cy="6" r="1.5" stroke="#C4BEE8" stroke-width="1"/></svg>
+            </div>
+            <div><span class="social-label">Discord</span><span class="social-handle">yourhandle</span></div>
+          </a>
+          <a class="social-item" href="#">
+            <div class="social-icon-box">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2.5 L9 13.5 L14 2.5" stroke="#C4BEE8" stroke-width="1.2" fill="none" stroke-linejoin="round"/><path d="M14 2.5 L7 13.5 L2 2.5" stroke="#C4BEE8" stroke-width="1.2" fill="none" stroke-linejoin="round"/></svg>
+            </div>
+            <div><span class="social-label">X (Twitter)</span><span class="social-handle">@yourhandle</span></div>
+          </a>
+          <a class="social-item" href="#">
+            <div class="social-icon-box">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="3" stroke="#C4BEE8" stroke-width="1.2"/><circle cx="8" cy="8" r="2.8" stroke="#C4BEE8" stroke-width="1.1"/><circle cx="11.5" cy="4.5" r="0.8" fill="#C4BEE8"/></svg>
+            </div>
+            <div><span class="social-label">Instagram</span><span class="social-handle">@yourhandle</span></div>
+          </a>
+          <a class="social-item" href="#">
+            <div class="social-icon-box">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#C4BEE8" stroke-width="1.2"/><path d="M5 8 Q8 4.5 11 8 Q8 11.5 5 8Z" stroke="#C4BEE8" stroke-width="1" fill="none"/><line x1="8" y1="2" x2="8" y2="14" stroke="#C4BEE8" stroke-width="0.8"/></svg>
+            </div>
+            <div><span class="social-label">Fiverr</span><span class="social-handle">yourfiverr</span></div>
+          </a>
+        </div>
+      </div>
+
+      <div class="contact-form">
+        <div class="form-row">
+          <div class="form-group"><label>First Name</label><input type="text" placeholder="Leonardo"/></div>
+          <div class="form-group"><label>Last Name</label><input type="text" placeholder="Da Vinci"/></div>
+        </div>
+        <div class="form-group"><label>Email Address</label><input type="email" placeholder="your@email.com"/></div>
+        <div class="form-group"><label>Subject</label><input type="text" placeholder="Commission Inquiry"/></div>
+        <div class="form-group"><label>Message</label><textarea rows="5" placeholder="Describe your vision…"></textarea></div>
+        <button class="submit-btn" id="submit-btn">Send Message &nbsp;◆</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">◆ &nbsp; Your Name &nbsp; ◆</div>
+  <p class="footer-note">3D Modeler &amp; Digital Artist &nbsp;·&nbsp; Crafted with Renaissance spirit</p>
+</footer>
+
+<script>
+document.getElementById('hamburger').addEventListener('click',function(){
+  document.getElementById('nav-links').classList.toggle('open');
+});
+document.querySelectorAll('#nav-links a').forEach(a=>{
+  a.addEventListener('click',()=>document.getElementById('nav-links').classList.remove('open'));
+});
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const f=btn.dataset.filter;
+    document.querySelectorAll('.gallery-card').forEach(card=>{
+      card.style.display=(f==='all'||card.dataset.category===f)?'':'none';
+    });
+  });
+});
+document.getElementById('submit-btn').addEventListener('click',function(){
+  const inputs=document.querySelectorAll('.contact-form input, .contact-form textarea');
+  let ok=true;
+  inputs.forEach(i=>{if(!i.value.trim())ok=false;});
+  if(!ok){alert('Please fill in all fields before sending.');return;}
+  this.textContent='Message Sent ◆';
+  this.style.background='var(--gold)';
+  this.style.color='var(--plum)';
+  this.disabled=true;
+  inputs.forEach(i=>i.value='');
+});
+</script>
+</body>
+</html>
