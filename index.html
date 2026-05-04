@@ -1038,7 +1038,7 @@
         <div class="contact-arrow">▶</div>
       </div>
 
-      <a class="contact-card discord" href="https://discord.com/users/seudiscord" target="_blank">
+      <a class="contact-card discord" href="https://discord.gg/k2h9Ake7" target="_blank">
         <div class="contact-icon">⚡</div>
         <div class="contact-info">
           <div class="contact-platform">DISCORD</div>
@@ -1160,32 +1160,56 @@
 
       const div = document.createElement('div');
       div.className = 'video-card';
-      div.onclick = () => openModal(i);
-      div.innerHTML = `
-        <div class="video-placeholder">
-          ${embedUrl
-            ? `<iframe class="placeholder-iframe" style="display:block" src="${embedUrl}" allowfullscreen allow="autoplay"></iframe>`
-            : `<div class="placeholder-text">
-                <span class="icon">▶</span>
-                SEU VÍDEO AQUI<br>
-                <small style="font-size:0.8rem;color:rgba(0,255,255,0.15)">CLIQUE PARA ADICIONAR</small>
-              </div>`
-          }
-          <div class="card-overlay">
-            <div class="play-btn">
-              <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+
+      if (embedUrl) {
+        // Card with video: iframe is fully interactive, right-click info to change
+        div.title = 'Duplo clique para trocar o vídeo';
+        div.ondblclick = () => openModal(i);
+        div.innerHTML = `
+          <div class="video-placeholder">
+            <iframe
+              src="${embedUrl}"
+              allowfullscreen
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;"
+            ></iframe>
+          </div>
+          <div class="card-info">
+            <div class="card-number">// TAPE-${String(i+1).padStart(3,'0')}</div>
+            <div class="card-title">${card.title}</div>
+            <div class="card-meta">
+              <span>◈ ${card.tag}</span>
+              <span style="color:var(--neon-green);text-shadow:0 0 6px var(--neon-green)">✔ CARREGADO</span>
             </div>
           </div>
-        </div>
-        <div class="card-info">
-          <div class="card-number">// TAPE-${String(i+1).padStart(3,'0')}</div>
-          <div class="card-title">${card.title}</div>
-          <div class="card-meta">
-            <span>◈ ${card.tag}</span>
-            <span>${hasVideo ? '✔ CARREGADO' : '○ AGUARDANDO'}</span>
+        `;
+      } else {
+        // Empty card: click opens modal
+        div.onclick = () => openModal(i);
+        div.innerHTML = `
+          <div class="video-placeholder">
+            <div class="placeholder-text">
+              <span class="icon">▶</span>
+              SEU VÍDEO AQUI<br>
+              <small style="font-size:0.8rem;color:rgba(0,255,255,0.15)">CLIQUE PARA ADICIONAR</small>
+            </div>
+            <div class="card-overlay">
+              <div class="play-btn">
+                <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+              </div>
+            </div>
           </div>
-        </div>
-      `;
+          <div class="card-info">
+            <div class="card-number">// TAPE-${String(i+1).padStart(3,'0')}</div>
+            <div class="card-title">${card.title}</div>
+            <div class="card-meta">
+              <span>◈ ${card.tag}</span>
+              <span>○ AGUARDANDO</span>
+            </div>
+          </div>
+        `;
+      }
+
       grid.appendChild(div);
     });
   }
