@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VHS STUDIO — Portfolio</title>
+<title>Hagtzu Editor — Portfolio</title>
 <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -32,7 +32,7 @@
     color: var(--text-main);
     font-family: 'Share Tech Mono', monospace;
     overflow-x: hidden;
-    cursor: crosshair;
+    cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAAAB8ElEQVR4nO2XTW7iQBCFX9tmHDhDYiKNcgBGQUCGc4zCgTgDd+AeyDYOCJYsY4YFEgsWbCy5682Cn0FhokH+S2bkb9nucr1+VW13AyUlJSWfE8e55Udr+Pd5eRnT913m6aaVJjiOY5AqKy1/xEga6Di3FBFYloXhcIhOp5WLi6mWLxJTKRPj8RgkAQja7adMLc1EIElMJhPUajVsNhtUKhU8P/9AGP5MLTZxic9Raq9jt9uhWq0ijuNMxAEZOXiEJDzPg1IKShHt9pOq1+/4+rpMnCdTgUeiKMJsNjvOStWXmZT4LbZto9lsHpw04fs++/1+ol2ei0AAMAwDWutTf26320TvyaXE52itEQTBPpkier0eRATX9mXuAo+sVissl8uDo9f3ZWECtdYwTRO+78M0TURRhG63+9f8ufXgW0zz90KiKIJlXXcMyNxBkqeNcTlfTs/2v0cNAOh0vivHcRiG4UVgZgJFBIZhIAgCaL1P3Gg0YNs21HuKryDVceuc6XQKkRitVkcBgOd5mZxuUvegiIDUUIoQETw8fCWAw5g6lfFDIDVJ0nVHfHz8duHYer2mSEwAuL93ir3D1Ot3dN0RXXf0bmLXHTEIApLkYDD4vJesNAIL+g4Kbm6+JIosROB8PsdisSgiVUlJScl/xy9nygCAGCQfcAAAAABJRU5ErkJggg==") 0 0, auto;
   }
 
   /* ===================== SCANLINES OVERLAY ===================== */
@@ -495,13 +495,15 @@
     gap: 14px;
   }
 
-  /* 8 cards with dynamic layout */
+  /* 10 cards with dynamic layout */
   .video-card { grid-column: span 4; }
   .video-card:nth-child(1) { grid-column: span 8; }
   .video-card:nth-child(4) { grid-column: span 8; }
   .video-card:nth-child(5) { grid-column: span 4; }
   .video-card:nth-child(7) { grid-column: span 6; }
   .video-card:nth-child(8) { grid-column: span 6; }
+  .video-card:nth-child(9) { grid-column: span 6; }
+  .video-card:nth-child(10) { grid-column: span 6; }
 
   .video-card {
     background: #0a0a12;
@@ -882,7 +884,6 @@
     .bento-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
     .video-card { grid-column: span 1 !important; }
     .video-card:nth-child(1), .video-card:nth-child(4) { grid-column: span 2 !important; }
-    .video-card:nth-child(7), .video-card:nth-child(8) { grid-column: span 1 !important; }
     .contact-card { padding: 20px; gap: 16px; }
     .contact-handle { font-size: 1.2rem; }
     .hero::before { display: none; }
@@ -921,7 +922,7 @@
 
   /* Hover cursor glow */
   a, button, .btn, .nav-links a, .contact-card, .video-card {
-    cursor: pointer;
+    cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAAACw0lEQVR4nO2Xy0ojQRSG/+qkQdzF20I0gXYhqKhBH0DmPVy48L1kHkBcjzJxcKeMVRkRVxJiREk3Meay0G5T/yxiOledNjEqQ3+7rqLrfHVOXbqBkJCQkK9FIjHLeHyGn+3xIiSZyWQopfwQSeMjggxCYMHPKuv/k8HPIhQclOh7DELWCBhQSsE0I1haWhatm0qICLLZrBiq4NXV9SsBmoXwPO9ZSiCbzfUl1Xvkd4KsJy6TyYAkpZRU6rTvI6pN0HEc5nI57u/vdw3YeQ4K0Ts5ne114WYYx8nz7CwdWNgvcTwe5/j4OMrlMiYnJ32pRmlbS6y1huu6SCQSJGuo1Wq+nGFEfLFec5iYmIDWOqhfU9AwACkltNZYX1+HlJJaa6ytrXW9ZFkWLMvC3t7e87sGhBBYWVkBAEgpaRity7tdyDTNwIJtzM3NcXNzkyTpOA7z+TwPD3/y4OAHE4lZAoBSitVqlSRZKBRo2zY7sW2bnueRJO/u7lgsFmnbNm9vb1mreSyVim8vMQB43iMqlRKAeilI4uYmBgAwjCgsyyLQXGdjY2M9B20sEQCIxWJd/SMjI0H92gWvrq7F4uIipZRIJpMQQmB1dRUAsLu7C621X8a3QBLpdNp/rlbL/QkCwMODi6OjXzBNE6ZpYn5+HgAwPT394s4dJl2CqVRKpFIpKKXY2J0AMDU11VeA+m7uf2Kv3CTBj4LXUEoNR3B7exsAsLPzHQCwsLDwpoHPz88hhBh4Wbx41Z2c/BaFQgGu+wDPe4Trumgt+b/wPA+u6w4kBwCBp3d8fMxoNIpkMtmzv3OntgURwr+jAaBUKmJj41ug2IEFl5eX6LouLi4u0Jn401MFo2ctGo1P2Nra8lsrlQouLzOBYgf+3Lq/v8fo6GjPPtOMQOuntiy195tQ6s9wz6igf3Xx+MzX/rEPCQkJaecvHQJgfz7rE4sAAAAASUVORK5CYII=") 0 0, pointer;
   }
 </style>
 </head>
@@ -952,7 +953,7 @@
       <div class="rec-dot"></div> REC
     </div>
 
-    <div class="vhs-badge">▶ PLAY — VIDEO EDITOR PORTFOLIO</div>
+    <div class="vhs-badge">▶ PORTFOLIO</div>
 
     <h1 class="hero-title">
       <span class="line1">HAG</span><span class="line2">TZU</span>
@@ -999,7 +1000,7 @@
   </section>
 
   <footer class="site-footer">
-    VHS.STUDIO — TODOS OS DIREITOS RESERVADOS &nbsp;|&nbsp; FEITO COM <span>♥</span> E MUITA CAFEÍNA
+    HAGTZU EDITOR — TODOS OS DIREITOS RESERVADOS &nbsp;|&nbsp; FEITO COM <span>♥</span> E MUITA CAFEÍNA
   </footer>
 </div>
 
@@ -1015,7 +1016,7 @@
   </div>
 
   <footer class="site-footer">
-    VHS.STUDIO — PORTFOLIO DE VÍDEO &nbsp;|&nbsp; <span>8 PROJECTS</span>
+    HAGTZU EDITOR — PORTFOLIO DE VÍDEO &nbsp;|&nbsp; <span>10 PROJECTS</span>
   </footer>
 </div>
 
@@ -1061,7 +1062,7 @@
 
     <div class="crt-footer">
       ══════════════════════════<br>
-      VHS.STUDIO — DISPONÍVEL PARA PROJETOS<br>
+      HAGTZU EDITOR — DISPONÍVEL PARA PROJETOS<br>
       RESPOSTA EM ATÉ 24H<br>
       ══════════════════════════
     </div>
@@ -1119,10 +1120,25 @@
     { title: 'PROJECT 006', tag: 'COMPOSITING', desc: 'Clique para adicionar' },
     { title: 'PROJECT 007', tag: 'TRAILER', desc: 'Clique para adicionar' },
     { title: 'PROJECT 008', tag: 'CLIPE', desc: 'Clique para adicionar' },
+    { title: 'PROJECT 009', tag: 'EDIÇÃO', desc: 'Clique para adicionar' },
+    { title: 'PROJECT 010', tag: 'EDIÇÃO', desc: 'Clique para adicionar' },
   ];
 
   let currentCardIndex = null;
-  const videoUrls = JSON.parse(localStorage.getItem('vhsVideos') || '{}');
+  const defaultUrls = {
+    0: 'https://youtu.be/I66O77g9-PY',
+    1: 'https://youtu.be/iOdtVBvKggc',
+    2: 'https://youtu.be/MMKgx56txHM',
+    3: 'https://youtu.be/mFIH4Xlecds',
+    4: 'https://youtu.be/FqxkmoDuWoE',
+    5: 'https://youtu.be/abM0K6DOBc0',
+    6: 'https://youtu.be/5UGbHGLe3X0',
+    7: 'https://youtu.be/NPhoCGXCLcU',
+    8: 'https://youtu.be/SmhW0yHO_2g',
+    9: 'https://youtu.be/i-egkAEuPTQ',
+  };
+  const saved = JSON.parse(localStorage.getItem('vhsVideos') || '{}');
+  const videoUrls = Object.assign({}, defaultUrls, saved);
 
   function getEmbedUrl(url) {
     // YouTube
@@ -1189,15 +1205,18 @@
   function confirmVideo() {
     const url = document.getElementById('videoUrlInput').value.trim();
     if (!url) return;
+    saved[currentCardIndex] = url;
     videoUrls[currentCardIndex] = url;
-    localStorage.setItem('vhsVideos', JSON.stringify(videoUrls));
+    localStorage.setItem('vhsVideos', JSON.stringify(saved));
     buildCards();
     closeModal();
   }
 
   function clearVideo() {
-    delete videoUrls[currentCardIndex];
-    localStorage.setItem('vhsVideos', JSON.stringify(videoUrls));
+    delete saved[currentCardIndex];
+    videoUrls[currentCardIndex] = defaultUrls[currentCardIndex] || null;
+    if (!videoUrls[currentCardIndex]) delete videoUrls[currentCardIndex];
+    localStorage.setItem('vhsVideos', JSON.stringify(saved));
     buildCards();
     closeModal();
   }
